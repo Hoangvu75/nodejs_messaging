@@ -13,13 +13,13 @@ const io = new Server(server);
 
 const PORT = process.env.PORT || 3000;
 
-io.on('connection', (socket) => {
+io.on("connection", (socket) => {
   console.log(`a user connected ${Date().toLocaleString()}`);
-  socket.on('chat request', (msg) => {
-    socket.broadcast.emit('chat response', msg);
+  socket.on("chat request", (msg) => {
+    socket.broadcast.emit("chat response", msg);
   });
-  socket.on('disconnect', () => {
-    console.log('user disconnected');
+  socket.on("disconnect", () => {
+    console.log("user disconnected");
   });
 });
 
@@ -47,4 +47,3 @@ mongoose.connect(
 app.use("/auth", authRouter);
 app.use("/contact", contactRouter);
 app.use("/chat", chatRouter);
-

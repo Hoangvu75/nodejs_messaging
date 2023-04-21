@@ -2,10 +2,6 @@ import jwt, { JwtPayload } from "jsonwebtoken";
 import express from "express";
 
 import { AccountModel } from "../models/account";
-import { ProfileModel } from "../models/profile";
-import { LoginValidator } from "../validator/login_validator";
-import { RegisterValidator } from "../validator/register_validator";
-import { AddProfileValidator } from "../validator/add_profile_validator";
 import { ChatModel } from "../models/chat";
 
 const ACCESS_TOKEN_SECRET =
@@ -16,16 +12,30 @@ export const createChat = async (
   res: express.Response
 ) => {
   try {
-    const new_chat = new ChatModel({
+    var chat = await ChatModel.findOne({
       users: [req.body.user_1, req.body.user_2],
-      chat: [],
     });
-    new_chat.save();
-    res.status(200).send({
-      success: true,
-      message: "Create chat successfully",
-      new_chat,
-    });
+    if (!chat) {
+      chat = await ChatModel.findOne({
+        users: [req.body.user_1, req.body.user_2],
+      });
+      if (!chat) {
+        const new_chat = new ChatModel({
+          users: [req.body.user_1, req.body.user_2],
+          chat: [],
+        });
+        new_chat.save();
+        res.status(200).send({
+          success: true,
+          message: "Create chat successfully",
+          new_chat,
+        });
+      } else if (chat) {
+        return;
+      }
+    } else if (chat) {
+      return;
+    }
   } catch (error) {
     res.status(500).send({
       success: false,

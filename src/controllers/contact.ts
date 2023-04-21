@@ -190,17 +190,10 @@ export const getContact = async (
       });
     } else if (account) {
       const contact = await ContactModel.findOne({ phone: account.phone });
-      if (!contact) {
-        res.status(500).send({
-          success: false,
-          message: "Invalid access permission. Please login again",
-        });
-      } else if (contact) {
-        res.status(200).send({
-          success: true,
-          contact: contact,
-        });
-      }
+      res.status(200).send({
+        success: true,
+        contact: contact,
+      });
     }
   } catch (error) {
     res.status(500).send({
