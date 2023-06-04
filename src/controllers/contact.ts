@@ -3,6 +3,7 @@ import jwt, { JwtPayload } from "jsonwebtoken";
 import { AccountModel } from "../models/account";
 import { ContactModel } from "../models/contact";
 import { ProfileModel } from "../models/profile";
+import { ChatModel } from "../models/chat";
 
 const ACCESS_TOKEN_SECRET =
   process.env.ACCESS_TOKEN_SECRET || "access_token_secret";
@@ -164,6 +165,17 @@ export const deleteContactItem = async (
         }
       }
     }
+
+    var chat = await ChatModel.findOne({ 'users.phone': { $all: [account?.phone, deleted_contact_phone] } });
+    console.log(chat);
+  
+    if (chat) {
+      await ChatModel.findOneAndDelete({ 'users.phone': { $all: [account?.phone, deleted_contact_phone] } });
+      console.log('Chat item deleted successfully.');
+    } else {
+      console.log('Chat item not found.');
+    }
+
   } catch (error) {
     res.status(500).send({
       success: false,
